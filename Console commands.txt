@@ -1,0 +1,12 @@
+Cardgenerator.deployed().then(function(instance) { app = instance })
+app.createRandomCard()
+app.globalCardCount()
+app.cardToOwner(0)
+app.ownerCardCount('0x96ecdd678133b2c9865f11ca3bceee4eaee427e7')
+app.cards(0)
+app.cards(0).then(function(c) { card = c })
+card.toNumber()
+
+web3.eth
+web3.eth.accounts
+web3.eth.accounts[0]

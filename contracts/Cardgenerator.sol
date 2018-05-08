@@ -6,6 +6,7 @@ contract Cardgenerator is Ownable {
     event NewCard(uint cardId, uint dna);
     
     //Parameters to define amount of digits, the modulus and the amount of cards in a starting deck
+    address owner;
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
     uint startingDeck = 10;
@@ -28,6 +29,7 @@ contract Cardgenerator is Ownable {
     //Constructor for setting initial card pack price
     constructor() public {
         cardPackCost = 1;
+        owner = msg.sender;
     }
 
     //Create a new card by passing dna, assign to msg.sender and trigger New Card event
@@ -70,17 +72,20 @@ contract Cardgenerator is Ownable {
             }        
     }
 
+    //Set cardPackCost. Takes a uint.
     function setCardPackPrice(uint _price) public onlyOwner {
         cardPackCost = _price;
     }    
     
+    //Get the accountbalance of the smart contract
     function getBalance() public returns (uint) {
         return address(this).balance;
     }
 
+    //Withdrawal function to send the entire balance to the owner
     function withdrawFunds() public onlyOwner {
         uint contractBalance;
         contractBalance = getBalance();
-        address(this).transfer(contractBalance);
+        address(owner).transfer(contractBalance);
     }
 }

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.19;
 
-contract Cardgenerator {
+contract Cardgenerator is Ownable {
 
     //Event for new card creation
     event NewCard(uint cardId, uint dna);
@@ -9,8 +9,8 @@ contract Cardgenerator {
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
     uint startingDeck = 10;
-    uint cardPack = 5;
-    uint cardPackCost = 3;
+    uint cardPackSize = 5;
+    uint cardPackCost;
 
     uint public globalCardCount;
 
@@ -24,6 +24,11 @@ contract Cardgenerator {
 
     mapping (uint => address) public cardToOwner;
     mapping (address => uint ) public ownerCardCount;
+
+    //Constructor for setting initial card pack price
+    constructor() public {
+        cardPackCost = 1;
+    }
 
     //Create a new card by passing dna, assign to msg.sender and trigger New Card event
     //Card id = position-1 in card array
@@ -44,13 +49,38 @@ contract Cardgenerator {
 
     //Create a random card when account has no cards
     //(add randomly generated name based upon cardtype)
-    function createRandomCard() public {
+    function createStartingDeck() public {
         require(ownerCardCount[msg.sender] == 0);
         uint _nonce = 1;
         for (uint i = 0; i < startingDeck; i++) {
-            uint randDna = _generateRandomDna(block.timestamp, _nonce);
+            uint randDna = _generateRandomDna(block.hash, _nonce);
             _createCard(randDna);
             _nonce++;
             }
+    }
+    
+    //Buy cardpacks. Takes (cardPackCost * _amount) in ETH.
+    //Generates (cardPackSize * _amount) amount of cards
+    function buyCardPacks(uint _amount) public payable costs(cardPackCost * _amount) {
+        uint _nonce = 1;
+        for (uint i = 0; i < (cardPackSize * _amount); i++) {
+            uint randDna = _generateRandomDna(block.hash, _nonce);
+            _createCard(randDna);
+            _nonce++;
+            }        
+    }
+
+    function setCardPackPrice(uint _price) public onlyOwner {
+        cardPackCost = _price;
+    }    
+    
+    function getBalance() public returns (uint) {
+        return address(this).balance;
+    }
+
+    function withdrawFunds() public onlyOwner {
+        uint contractBalance;
+        contractBalance = getBalance();
+        address(this).transfer(contractBalance);
     }
 }

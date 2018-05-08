@@ -1,17 +1,17 @@
 pragma solidity ^0.4.19;
 
-contract Cardgenerator is Ownable {
+contract Cardgenerator  is Ownable {
 
     //Event for new card creation
     event NewCard(uint cardId, uint dna);
     
     //Parameters to define amount of digits, the modulus and the amount of cards in a starting deck
-    address owner;
+    address public owner;
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
-    uint startingDeck = 10;
-    uint cardPackSize = 5;
-    uint cardPackCost;
+    uint public startingDeck = 10;
+    uint public cardPackSize = 5;
+    uint public cardPackCost;
 
     uint public globalCardCount;
 
@@ -27,7 +27,7 @@ contract Cardgenerator is Ownable {
     mapping (address => uint ) public ownerCardCount;
 
     //Constructor for setting initial card pack price
-    constructor() public {
+    function Cardgenerator() public {
         cardPackCost = 1;
         owner = msg.sender;
     }
@@ -55,7 +55,7 @@ contract Cardgenerator is Ownable {
         require(ownerCardCount[msg.sender] == 0);
         uint _nonce = 1;
         for (uint i = 0; i < startingDeck; i++) {
-            uint randDna = _generateRandomDna(block.hash, _nonce);
+            uint randDna = _generateRandomDna(block.timestamp, _nonce);
             _createCard(randDna);
             _nonce++;
             }
@@ -70,20 +70,20 @@ contract Cardgenerator is Ownable {
             _createCard(randDna);
             _nonce++;
             }        
-    }
+    } 
 
     //Set cardPackCost. Takes a uint.
-    function setCardPackPrice(uint _price) public onlyOwner {
+    function setCardPackPrice(uint _price) public  onlyOwner {
         cardPackCost = _price;
     }    
     
     //Get the accountbalance of the smart contract
-    function getBalance() public returns (uint) {
+    function getBalance() public view returns (uint) {
         return address(this).balance;
     }
 
     //Withdrawal function to send the entire balance to the owner
-    function withdrawFunds() public onlyOwner {
+    function withdrawFunds() public  onlyOwner {
         uint contractBalance;
         contractBalance = getBalance();
         address(owner).transfer(contractBalance);

@@ -1,6 +1,9 @@
 pragma solidity ^0.4.19;
 
-contract Cardgenerator  is Ownable {
+import "./ownable.sol";
+import "./priced.sol";
+
+contract Cardgenerator is Ownable, Priced {
 
     //Event for new card creation
     event NewCard(uint cardId, uint dna);
@@ -66,14 +69,14 @@ contract Cardgenerator  is Ownable {
     function buyCardPacks(uint _amount) public payable costs(cardPackCost * _amount) {
         uint _nonce = 1;
         for (uint i = 0; i < (cardPackSize * _amount); i++) {
-            uint randDna = _generateRandomDna(block.hash, _nonce);
+            uint randDna = _generateRandomDna(block.timestamp, _nonce);
             _createCard(randDna);
             _nonce++;
             }        
     } 
 
     //Set cardPackCost. Takes a uint.
-    function setCardPackPrice(uint _price) public  onlyOwner {
+    function setCardPackPrice(uint _price) public onlyOwner {
         cardPackCost = _price;
     }    
     
@@ -83,7 +86,7 @@ contract Cardgenerator  is Ownable {
     }
 
     //Withdrawal function to send the entire balance to the owner
-    function withdrawFunds() public  onlyOwner {
+    function withdrawFunds() public onlyOwner {
         uint contractBalance;
         contractBalance = getBalance();
         address(owner).transfer(contractBalance);

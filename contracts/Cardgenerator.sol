@@ -1,9 +1,8 @@
 pragma solidity ^0.4.19;
 
 import "./ownable.sol";
-import "./priced.sol";
 
-contract Cardgenerator is Ownable, Priced {
+contract Cardgenerator is Ownable {
 
     //Event for new card creation
     event NewCard(uint cardId, uint dna);
@@ -31,7 +30,7 @@ contract Cardgenerator is Ownable, Priced {
 
     //Constructor for setting initial card pack price
     function Cardgenerator() public {
-        cardPackCost = 1;
+        cardPackCost = 3 ether;
         owner = msg.sender;
     }
 
@@ -66,7 +65,8 @@ contract Cardgenerator is Ownable, Priced {
     
     //Buy cardpacks. Takes (cardPackCost * _amount) in ETH.
     //Generates (cardPackSize * _amount) amount of cards
-    function buyCardPacks(uint _amount) public payable costs(cardPackCost * _amount) {
+    function buyCardPacks(uint _amount) public payable {
+        require(msg.value == (cardPackCost * _amount));
         uint _nonce = 1;
         for (uint i = 0; i < (cardPackSize * _amount); i++) {
             uint randDna = _generateRandomDna(block.timestamp, _nonce);

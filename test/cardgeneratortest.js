@@ -4,7 +4,6 @@ var Cardgenerator = artifacts.require("./Cardgenerator.sol");
 // Declare the contract
 contract("Cardgenerator", function(accounts) {
 
-
     // Name the test and initialize it
     it("Smart contract owner is the uploader address", function () {
         // Create an instance of our contract and return the owner of the contract
@@ -16,27 +15,21 @@ contract("Cardgenerator", function(accounts) {
         });
     });
 
-
-
     it("Constructor for setting cardPackPrice is working correctly", function () {
         return Cardgenerator.deployed().then(function (instance) {
             return instance.cardPackCost(); 
         }).then(function (price) {
-            assert.equal(price, web3.toWei("1", "ether"));
+            assert.equal(price, web3.toWei("3", "ether"));
         });
     });
 
-
-
-    it("Constructor for setting startingDeck is working correctly", function () {
+    it("Constructor for setting startingDeck size is working correctly", function () {
         return Cardgenerator.deployed().then(function (instance) {
             return instance.startingDeck();
         }).then(function (deck) {
             assert.equal(deck, 10);
         });
     });
-
-
 
     it("Constructor for setting cardPackSize is working correctly", function () { 
         return Cardgenerator.deployed().then(function (instance) {
@@ -45,8 +38,6 @@ contract("Cardgenerator", function(accounts) {
             assert.equal(pack, 5);
         });
     });
-
-
 
     it("A starting deck of 10 cards can be generated", function () {
         return Cardgenerator.deployed().then(function (instance) {
@@ -59,9 +50,6 @@ contract("Cardgenerator", function(accounts) {
         });
     });
 
-
-
-
     it("The first card belongs to the right account", function () {
         return Cardgenerator.deployed().then(function (instance) {
             return instance.cardToOwner(0);
@@ -69,8 +57,6 @@ contract("Cardgenerator", function(accounts) {
             assert.equal(card, web3.eth.accounts[0]);
         });
     });
-
-
 
     it("The account that generated a starting deck has 10 cards", function () {
         return Cardgenerator.deployed().then(function (instance) {
@@ -80,11 +66,9 @@ contract("Cardgenerator", function(accounts) {
         });
     });
 
-
-
     it("Is possible to pay for a cardpack", function() {
         return Cardgenerator.deployed().then(function(instance) {
-            return instance.buyCardPacks(1, { from: web3.eth.accounts[0], value: web3.toWei('1', 'ether')});        
+            return instance.buyCardPacks(1, { from: web3.eth.accounts[0], value: web3.toWei('3', 'ether')});        
         })
         return Cardgenerator.deployed().then(function(instance) {
             return instance.ownerCardCount(web3.eth.accounts[0]);
@@ -95,7 +79,7 @@ contract("Cardgenerator", function(accounts) {
 
     it("Is possible to pay for a cardpack from a different address than web3.eth.accounts[0]", function() {
         return Cardgenerator.deployed().then(function(instance) {
-            return instance.buyCardPacks(1, { from: web3.eth.accounts[1], value: web3.toWei('1', 'ether')});
+            return instance.buyCardPacks(1, { from: web3.eth.accounts[1], value: web3.toWei('3', 'ether')});
         })
         return Cardgenerator.deployed().then(function(instance) {
             return instance.ownerCardCount(web3.eth.accounts[1]);
@@ -108,7 +92,7 @@ contract("Cardgenerator", function(accounts) {
       return Cardgenerator.deployed().then(function(instance) {
         return instance.buyCardPacks(3, {
           from: web3.eth.accounts[2],
-          value: web3.toWei("3", "ether")
+          value: web3.toWei("9", "ether")
         });
       });
       return Cardgenerator.deployed()
@@ -125,7 +109,7 @@ contract("Cardgenerator", function(accounts) {
         .then(function(instance) {
           return instance.getBalance();
         }).then(function(contractBalance) {
-          assert.equal(contractBalance, web3.toWei("5", "ether"));
+          assert.equal(contractBalance, web3.toWei("15", "ether"));
         });
     });
 });

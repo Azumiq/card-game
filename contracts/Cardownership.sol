@@ -1,10 +1,12 @@
 pragma solidity ^0.4.19;
 
 import "./Cardgenerator.sol";
-import "./ERC721.sol";
 
-contract CardOwnership is Cardgenerator, ERC721 {
+contract Cardownership is Cardgenerator {
     
+    event Transfer(address indexed _from, address indexed _to, uint256 _tokenId);
+    event Approval(address indexed _owner, address indexed _approved, uint256 _tokenId);
+
     mapping (uint => address) cardApprovals;
     
     modifier onlyOwnerOf(uint _cardId) {

@@ -10,3 +10,6 @@ card.toNumber()
 web3.eth
 web3.eth.accounts
 web3.eth.accounts[0]
+
+app.transferOwnership(web3.eth.accounts[0], { from: web3.eth.accounts[1] })
+app.setCardPackPrice(web3.toWei(1, "ether"))

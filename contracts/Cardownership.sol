@@ -6,6 +6,7 @@ contract Cardownership is Cardgenerator {
     
     event Transfer(address indexed _from, address indexed _to, uint256 _tokenId);
     event Approval(address indexed _owner, address indexed _approved, uint256 _tokenId);
+    event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
 
     mapping (uint => address) cardApprovals;
     
@@ -14,14 +15,14 @@ contract Cardownership is Cardgenerator {
         _;
     }
 
-    function balanceOf(address _owner) public view returns (uint256 _balance) {
+    function balanceOf(address _owner) external view returns (uint256 _balance) {
         return ownerCardCount[_owner];
     }
 
-    function ownerOf(uint256 _tokenId) public view returns (address _owner) {
+    function ownerOf(uint256 _tokenId) external view returns (address _owner) {
         return cardToOwner[_tokenId];
     }
-
+// Ga hier verder met ERC721 implementatie
     function _transfer(address _from, address _to, uint256 _tokenId) private {
         ownerCardCount[_to]++;
         ownerCardCount[_from]--;
@@ -40,7 +41,7 @@ contract Cardownership is Cardgenerator {
 
     function takeOwnership(uint256 _tokenId) public {
         require(cardApprovals[_tokenId] == msg.sender);
-        address owner = ownerOf(_tokenId);
-        _transfer(owner, msg.sender, _tokenId);
+        address _owner = cardToOwner[_tokenId];
+        _transfer(_owner, msg.sender, _tokenId);
     }
 }
